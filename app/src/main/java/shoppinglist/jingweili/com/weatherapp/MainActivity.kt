@@ -12,8 +12,9 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 class MainActivity : AppCompatActivity() {
-    var cityNames = arrayListOf("Rochester", "New York", "Boca Raton")
+    var cityNames = arrayListOf("Rochester", "Boca Raton", "New York")
     var cities = ArrayList<WeatherForCity>()
+    private var listViewAdapter: BaseAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +29,8 @@ class MainActivity : AppCompatActivity() {
             val city = listOfCities[p0]
             val weatherCell = layoutInflater.inflate(R.layout.weather_cell, null)
             weatherCell.cityNameTextView.text = city.name
-            weatherCell.tempTextView.text = city.temperature.toString()
+            val temperature = city.temperature.toString() + " F"
+            weatherCell.tempTextView.text = temperature
             //val currentTime = LocalDateTime.now().format(DateTimeFormatter.ISO_TIME)
             //weatherCell.timeTextView.text = currentTime
             weatherCell.weatherConditionTextView.text = city.condition
@@ -67,12 +69,14 @@ class MainActivity : AppCompatActivity() {
             super.onPreExecute()
         }
 
+        // called on the UI thread
         override fun onProgressUpdate(vararg values: String?) {
             try {
                 if (values != null) {
                     cities.add(WeatherForCity(values[0]!!))
                     if (cities.size == cityNames.size) {
-                        weatherListView.adapter = WeatherForCityAdapter(cities)
+                        listViewAdapter = WeatherForCityAdapter(cities)
+                        weatherListView.adapter = listViewAdapter
                     }
                 }
             } catch (ex: Exception) {
