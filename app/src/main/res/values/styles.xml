@@ -3,9 +3,17 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimary">@color/darkGreen</item>
+        <item name="colorPrimaryDark">@color/darkGreen</item>
         <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="DarkGreenActionBar" parent="@android:style/Theme.Holo.Light">
+        <item name="android:actionBarStyle">@style/DarkGreen</item>
+    </style>
+
+    <style name="DarkGreen" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:background">@color/darkGreen</item>
     </style>
 
 </resources>

@@ -1,25 +1,44 @@
 package shoppinglist.jingweili.com.weatherapp
 
+import android.content.Intent
 import android.os.AsyncTask
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.BaseAdapter
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.weather_cell.view.*
 import java.net.HttpURLConnection
 import java.net.URL
 
 class MainActivity : AppCompatActivity() {
-    var cityNames = arrayListOf("Rochester", "Boca Raton", "New York")
+    var cityNames = arrayListOf("Rochester", "Boca Raton", "New York", "Troy")
     var cities = ArrayList<WeatherForCity>()
-    private var listViewAdapter: BaseAdapter? = null
+    var listViewAdapter: BaseAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        cityNames.forEach { WeatherFetcher().execute(WeatherAPI.currentWeatherEndpoint(it)) }
+        getWeatherData()
+    }
+
+    // Menu | Action Bar
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.activity_main_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item != null && item.itemId == R.id.refresh_main_list_view_button) {
+            cities.clear()
+            getWeatherData()
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     // ListView Adapter
@@ -48,7 +67,6 @@ class MainActivity : AppCompatActivity() {
         override fun getCount(): Int {
             return cities.size
         }
-
     }
 
     // HTTP Calls
@@ -75,8 +93,17 @@ class MainActivity : AppCompatActivity() {
                 if (values != null) {
                     cities.add(WeatherForCity(values[0]!!))
                     if (cities.size == cityNames.size) {
-                        listViewAdapter = WeatherForCityAdapter(cities)
-                        weatherListView.adapter = listViewAdapter
+                        if (weatherListView.adapter == null) {
+                            listViewAdapter = WeatherForCityAdapter(cities)
+                            weatherListView.adapter = listViewAdapter
+                            weatherListView.setOnItemClickListener { _, _, position, _ ->
+                                val intent = Intent(this@MainActivity, DetailedWeatherActivity::class.java)
+                                intent.putExtra(WeatherForCity.intentIdentifier, cities[position])
+                                startActivity(intent)
+                            }
+                        } else {
+                            listViewAdapter?.notifyDataSetChanged()
+                        }
                     }
                 }
             } catch (ex: Exception) {
@@ -87,5 +114,9 @@ class MainActivity : AppCompatActivity() {
         override fun onPostExecute(result: String?) {
             super.onPostExecute(result)
         }
+    }
+
+    private fun getWeatherData() {
+        cityNames.forEach { WeatherFetcher().execute(WeatherAPI.currentWeatherEndpoint(it)) }
     }
 }

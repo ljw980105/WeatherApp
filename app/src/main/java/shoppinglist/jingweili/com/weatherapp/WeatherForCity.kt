@@ -1,9 +1,10 @@
 package shoppinglist.jingweili.com.weatherapp
 
 import org.json.JSONObject
+import java.io.Serializable
 
 
-class WeatherForCity {
+class WeatherForCity: Serializable {
     var name: String = ""
     var temperature: Int = 0
     var condition: String = ""
@@ -17,6 +18,10 @@ class WeatherForCity {
 
     private fun kelvinToFahrenheit(kelvin: Int): Int {
         return (1.8 * (kelvin -273) + 32).toInt()
+    }
+
+    companion object {
+        val intentIdentifier = "WeatherData"
     }
 
 }
