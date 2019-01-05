@@ -17,8 +17,7 @@ class DetailedWeatherActivity: AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         weather = intent.getSerializableExtra(WeatherForCity.intentIdentifier) as WeatherForCity
-        val temperature = weather!!.temperature
-        val name = weather!!.name
-        textView.text = "$name's temperature is $temperature F"
+        val temperature = weather?.temperature
+        val name = weather?.name
     }
 }
