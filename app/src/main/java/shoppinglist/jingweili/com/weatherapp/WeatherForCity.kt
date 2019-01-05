@@ -29,6 +29,8 @@ class WeatherForCity(json: String) : Serializable {
 
     companion object {
         val intentIdentifier = "WeatherData"
+        val infoToDisplay = arrayListOf("City", "Temperature", "Condition", "Visibility", "Wind Speed",
+                "Humidity", "Pressure")
     }
 
 }
